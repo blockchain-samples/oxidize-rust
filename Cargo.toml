@@ -1,0 +1,6 @@
+[package]
+name = "block_n_rust"
+version = "0.1.0"
+authors = ["theochupp <tclchiam@gmail.com>"]
+
+[dependencies]
