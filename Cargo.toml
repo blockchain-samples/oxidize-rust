@@ -5,3 +5,4 @@ authors = ["theochupp <tclchiam@gmail.com>"]
 
 [dependencies]
 rust-crypto = "0.2.36"
+time = "0.1"
