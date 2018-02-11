@@ -1,4 +1,6 @@
+extern crate byteorder;
 extern crate crypto;
+extern crate rustc_serialize;
 extern crate time;
 
 mod hash;

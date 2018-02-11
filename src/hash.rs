@@ -1,13 +1,17 @@
 use crypto::digest::Digest;
-use crypto::sha2::Sha256;
+use crypto::sha2;
 
-pub type Hash = String;
+pub type Hash = [u8; 32];
 
-pub fn calculate_hash(input: &str) -> Hash {
-    let mut sha256 = Sha256::new();
-    sha256.input_str(input);
+pub const EMPTY_HASH: Hash = [0u8; 32];
 
-    sha256.result_str()
+#[inline]
+pub fn sha256(data: &[u8]) -> Hash {
+    let mut out = [0u8; 32];
+    let mut hasher = sha2::Sha256::new();
+    hasher.input(data);
+    hasher.result(&mut out);
+    return out;
 }
 
 #[cfg(test)]
@@ -18,7 +22,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hash() {
+    fn test_sha256() {
         let tests = [
             Test {
                 input: "",
@@ -67,7 +71,9 @@ mod tests {
         ];
 
         for test in tests.iter() {
-            let hash = super::calculate_hash(test.input);
+            use rustc_serialize::hex::ToHex;
+
+            let hash = super::sha256(test.input.as_bytes()).to_hex();
             assert_eq!(hash, test.output)
         }
     }

@@ -4,5 +4,7 @@ version = "0.1.0"
 authors = ["theochupp <tclchiam@gmail.com>"]
 
 [dependencies]
+byteorder = "1"
 rust-crypto = "0.2.36"
+rustc-serialize = "~0.3"
 time = "0.1"
