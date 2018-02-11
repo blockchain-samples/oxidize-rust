@@ -11,22 +11,24 @@ struct Block<'a> {
     data: &'a str,
 }
 
-fn make_block(previous_hash: Hash, data: &str) -> Block {
-    let timestamp = get_time().sec as u64;
+impl<'a> Block<'a> {
+    fn new(previous_hash: Hash, data: &str) -> Block {
+        let timestamp = get_time().sec as u64;
 
-    let hash_input = [
-        previous_hash.to_vec(),
-        u64_to_vec(timestamp),
-        data.as_bytes().to_vec(),
-    ].concat();
-    let hash = sha256(&hash_input[..]);
+        let hash_input = [
+            previous_hash.to_vec(),
+            u64_to_vec(timestamp),
+            data.as_bytes().to_vec(),
+        ].concat();
+        let hash = sha256(&hash_input[..]);
 
-    return Block {
-        data: data,
-        timestamp: timestamp,
-        previous_hash: previous_hash,
-        hash: hash,
-    };
+        Block {
+            data: data,
+            timestamp: timestamp,
+            previous_hash: previous_hash,
+            hash: hash,
+        }
+    }
 }
 
 fn u64_to_vec(v: u64) -> Vec<u8> {
@@ -41,7 +43,7 @@ mod tests {
     fn test_make_block() {
         let previous_hash = super::EMPTY_HASH;
         let data = "data yo";
-        let block = super::make_block(previous_hash, &data);
+        let block = super::Block::new(previous_hash, &data);
 
         let hash_input = [
             previous_hash.to_vec(),
