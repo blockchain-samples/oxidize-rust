@@ -70,11 +70,11 @@ mod tests {
             },
         ];
 
-        for test in tests.iter() {
+        tests.iter().for_each(|test| {
             use rustc_serialize::hex::ToHex;
 
             let hash = super::sha256(test.input.as_bytes()).to_hex();
             assert_eq!(hash, test.output)
-        }
+        });
     }
 }
