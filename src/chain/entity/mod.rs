@@ -12,3 +12,7 @@ pub type Transaction = tx::Transaction;
 pub fn genesis_block() -> Block {
     block::genesis_block()
 }
+
+pub trait Hashable {
+    fn to_hash(&self) -> Hash;
+}

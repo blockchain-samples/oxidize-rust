@@ -1,4 +1,7 @@
+use bytes::u64_to_vec;
+use chain::entity::Hashable;
 use hash::Hash;
+use hash::sha256;
 
 #[derive(Debug, Clone)]
 pub struct Header {
@@ -30,5 +33,19 @@ impl Header {
             hash,
             difficulty,
         }
+    }
+}
+
+impl Hashable for Header {
+    fn to_hash(&self) -> Hash {
+        let hash_input = [
+            self.previous_hash.to_vec(),
+            self.transactions_hash.to_vec(),
+            u64_to_vec(self.timestamp),
+            u64_to_vec(self.nonce),
+            u64_to_vec(self.difficulty),
+        ].concat();
+
+        return sha256(&hash_input[..]);
     }
 }
