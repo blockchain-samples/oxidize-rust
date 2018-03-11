@@ -5,7 +5,9 @@ authors = ["theochupp <tclchiam@gmail.com>"]
 
 [dependencies]
 byteorder = "1"
+num-bigint = "0.1"
+num-traits = "0.2"
+rand = "0.4"
 rust-crypto = "0.2.36"
 rustc-serialize = "~0.3"
 time = "0.1"
-rand = "0.4"

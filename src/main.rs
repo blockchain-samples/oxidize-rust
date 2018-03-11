@@ -1,12 +1,15 @@
 extern crate byteorder;
 extern crate crypto;
+extern crate num_bigint;
+extern crate num_traits;
 extern crate rand;
 extern crate rustc_serialize;
 extern crate time;
 
-mod hash;
-mod block;
-mod account;
+pub mod account;
+pub mod chain;
+pub mod block;
+pub mod hash;
 
 fn main() {
     println!("Hello, world!");

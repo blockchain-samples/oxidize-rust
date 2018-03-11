@@ -1,5 +1,4 @@
 use byteorder::{BigEndian, ByteOrder};
-use hash::EMPTY_HASH;
 use hash::Hash;
 use hash::sha256;
 use time::get_time;
@@ -41,7 +40,9 @@ fn u64_to_vec(v: u64) -> Vec<u8> {
 mod tests {
     #[test]
     fn test_make_block() {
-        let previous_hash = super::EMPTY_HASH;
+        use hash::EMPTY_HASH;
+
+        let previous_hash = EMPTY_HASH;
         let data = "data yo";
         let block = super::Block::new(previous_hash, &data);
 
