@@ -7,8 +7,8 @@ extern crate rustc_serialize;
 extern crate time;
 
 pub mod account;
+pub mod bytes;
 pub mod chain;
-pub mod block;
 pub mod hash;
 
 fn main() {
