@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package blockrpc;
+
+import "_proto/blockchain_entities.proto";
+
+service SyncService {
+    rpc GetBestHeader (GetBestHeaderRequest) returns (GetBestHeaderResponse);
+    rpc GetHeaders (GetHeadersRequest) returns (GetHeadersResponse);
+    rpc GetBlock (GetBlockRequest) returns (GetBlockResponse);
+}
+
+message GetBestHeaderRequest {
+}
+
+message GetBestHeaderResponse {
+    required wire.BlockHeader header = 1;
+}
+
+message GetHeadersRequest {
+    required bytes latestHash = 1;
+    required uint64 latestIndex = 2;
+}
+
+message GetHeadersResponse {
+    required uint32 headerCount = 1;
+    repeated wire.BlockHeader headers = 2;
+}
+
+message GetBlockRequest {
+    required bytes hash = 1;
+    required uint64 index = 2;
+}
+
+message GetBlockResponse {
+    required wire.Block block = 1;
+}

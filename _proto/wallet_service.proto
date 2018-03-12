@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+package rpc;
+
+import "_proto/blockchain_entities.proto";
+
+service WalletService {
+    rpc Account (AccountRequest) returns (AccountResponse);
+    rpc UnspentOutputs (UnspentOutputsRequest) returns (UnspentOutputsResponse);
+    rpc ProposeTransaction (ProposeTransactionRequest) returns (ProposeTransactionResponse);
+}
+
+message Account {
+    required string address = 1;
+    required uint64 spendable = 3;
+    repeated wire.Transaction transactions = 5;
+}
+
+message WireUnspentOutput {
+    required string address = 1;
+    required bytes txHash = 2;
+    required wire.Output output = 3;
+}
+
+message AccountRequest {
+    repeated string addresses = 1;
+}
+
+message AccountResponse {
+    repeated Account accounts = 1;
+}
+
+message UnspentOutputsRequest {
+    repeated string addresses = 1;
+}
+
+message UnspentOutputsResponse {
+    repeated WireUnspentOutput outputs = 1;
+}
+
+message ProposeTransactionRequest {
+    required wire.Transaction transaction = 1;
+}
+
+message ProposeTransactionResponse {
+}
