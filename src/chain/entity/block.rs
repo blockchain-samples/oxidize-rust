@@ -4,7 +4,7 @@ use chain::entity::tx::Transaction;
 use hash::EMPTY_HASH;
 use hash::hash_from_string;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Block {
     pub header: Header,
     pub transactions: Vec<Transaction>,

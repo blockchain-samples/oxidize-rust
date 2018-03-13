@@ -18,11 +18,23 @@ pub fn hash_from_string(hash_str: &str) -> Result<Hash, FromHexError> {
     }
 
     let bytes: Vec<u8> = hash_str.from_hex()?;
+    Ok(hash_from_vec(bytes))
+}
+
+pub fn hash_from_vec(bytes: Vec<u8>) -> Hash {
     let mut hash = [0u8; HASH_SIZE];
     for i in 0..hash.len() {
         hash[i] = bytes[i];
     }
-    Ok(hash)
+    hash
+}
+
+pub fn hash_from_bytes(bytes: &[u8]) -> Hash {
+    let mut hash = [0u8; HASH_SIZE];
+    for i in 0..hash.len() {
+        hash[i] = bytes[i];
+    }
+    hash
 }
 
 pub fn has_difficulty(hash: Hash, difficulty: u64) -> bool {

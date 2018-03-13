@@ -1,6 +1,6 @@
 use hash::Hash;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Transaction {
     pub id: Hash,
     pub inputs: Vec<Input>,
@@ -24,18 +24,18 @@ impl Transaction {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Input {
     pub output_ref: OutputReference,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Output {
     pub index: u64,
     pub value: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OutputReference {
     pub id: Hash,
     pub output: Output,
