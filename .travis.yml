@@ -2,14 +2,24 @@ sudo: false
 os:
   - linux
 
+env:
+  - PROTOBUF_VERSION=3.5.1
+
 language: rust
 rust:
-    - stable
-    - beta
-    - nightly
+  - stable
+  - beta
+  - nightly
 
 matrix:
   allow_failures:
     - rust: nightly
 
 cache: cargo
+
+before_script:
+  - ./install-protobuf.sh
+
+notifications:
+  email:
+    on_success: never
