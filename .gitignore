@@ -5,3 +5,5 @@
 # Rust
 /target/
 **/*.rs.bk
+
+.DS_Store

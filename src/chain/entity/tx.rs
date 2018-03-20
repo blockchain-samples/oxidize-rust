@@ -27,12 +27,15 @@ impl Transaction {
 #[derive(Debug, Clone)]
 pub struct Input {
     pub output_ref: OutputReference,
+    pub public_key: Vec<u8>,
+    pub signature: Vec<u8>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Output {
-    pub index: u64,
+    pub index: u32,
     pub value: u64,
+    pub public_key_hash: [u8; 20],
 }
 
 #[derive(Debug, Clone)]

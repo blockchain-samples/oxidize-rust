@@ -3,6 +3,7 @@ use chain::entity::genesis_block;
 
 pub mod consensus;
 pub mod entity;
+pub mod wire;
 
 #[derive(Debug)]
 pub enum ChainError {

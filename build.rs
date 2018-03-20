@@ -3,7 +3,7 @@ extern crate protoc_rust_grpc;
 fn main() {
     // blockchain_entities.proto
     protoc_rust_grpc::run(protoc_rust_grpc::Args {
-        out_dir: "src/chain/encoding",
+        out_dir: "src/chain/wire",
         includes: &["_proto", "."],
         input: &["blockchain_entities.proto"],
         rust_protobuf: true,

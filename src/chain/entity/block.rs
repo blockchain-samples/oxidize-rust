@@ -37,7 +37,7 @@ pub fn genesis_block() -> Block {
             Transaction {
                 id: hash_from_string("d81f935f0c45cd0df0ccf073ae0e33432dd14cd925262a51a5bb43a77f433862").unwrap(),
                 inputs: vec![],
-                outputs: vec![Output { index: 0, value: 10 }],
+                outputs: vec![Output { index: 0, value: 10, public_key_hash: [0u8; 20] }],
                 secret: hash_from_string("39f39efae3884e28f5a5c4a62dd994e2943ac9cc7f9684070dfd4add7353722f").unwrap(),
             }
         ],
