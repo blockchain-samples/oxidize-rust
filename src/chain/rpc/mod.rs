@@ -69,12 +69,7 @@ struct SyncServiceImpl {
 impl blockchain_service_grpc::SyncService for SyncServiceImpl {
     fn get_best_header(&self, _opt: RequestOptions, _req: GetBestHeaderRequest) -> SingleResponse<GetBestHeaderResponse> {
         return self.blockchain.best_header()
-            .map(|option| {
-                option.map_or(
-                    SingleResponse::err(grpc::Error::Panic("Not found".to_string())),
-                    |header| SingleResponse::completed(to_get_best_header_response(header)),
-                )
-            })
+            .map(|header| SingleResponse::completed(to_get_best_header_response(header)))
             .unwrap_or_else(|e| SingleResponse::err(grpc::Error::Panic(e.to_string())));
     }
 
@@ -137,7 +132,6 @@ mod tests {
 
         let blockchain = Arc::new(Blockchain::new());
         let best_header = blockchain.best_header()
-            .expect("best header is required")
             .expect("best header is required");
         let (_node, client) = setup(blockchain);
 

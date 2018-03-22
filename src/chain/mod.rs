@@ -28,15 +28,17 @@ impl Blockchain {
         Blockchain { store: vec![genesis_block()] }
     }
 
-    pub fn best_block(&self) -> Result<Option<Block>, ChainError> {
+    pub fn best_block(&self) -> Result<Block, ChainError> {
         let best_block = self.store.last()
-            .map(|block| block.clone());
+            .map(|block| block.clone())
+            .expect("chain should have at least one block");
         Ok(best_block)
     }
 
-    pub fn best_header(&self) -> Result<Option<Header>, ChainError> {
+    pub fn best_header(&self) -> Result<Header, ChainError> {
         let best_header = self.store.last()
-            .map(|block| block.header.clone());
+            .map(|block| block.header.clone())
+            .expect("chain should have at least one block");
         Ok(best_header)
     }
 

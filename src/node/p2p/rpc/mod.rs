@@ -4,6 +4,7 @@ use futures::Future;
 use grpc;
 use grpc::RequestOptions;
 use grpc::SingleResponse;
+use hash::hash_from_bytes;
 use node::p2p::rpc::node_discovery_service::*;
 use node::p2p::rpc::node_discovery_service_grpc::*;
 use std::sync::Arc;
@@ -32,9 +33,8 @@ impl DiscoveryClient {
     fn version(&self) -> Box<Future<Item=(u64, ::hash::Hash), Error=grpc::Error>> {
         let version = self.client.version(grpc::RequestOptions::new(), VersionRequest::new())
             .drop_metadata()
-            .map(|res| {
-                (res.get_latestIndex(), ::hash::hash_from_bytes(res.get_latestHash()))
-            });
+            .map(|res| (res.get_latestIndex(), hash_from_bytes(res.get_latestHash())));
+
         return Box::new(version);
     }
 }
@@ -50,12 +50,7 @@ impl node_discovery_service_grpc::DiscoveryService for DiscoveryServiceImpl {
 
     fn version(&self, _opt: RequestOptions, _req: VersionRequest) -> SingleResponse<VersionResponse> {
         return self.blockchain.best_block()
-            .map(|option| {
-                option.map_or(
-                    SingleResponse::err(grpc::Error::Panic("Not found".to_string())),
-                    |best_block| SingleResponse::completed(to_version_response(best_block)),
-                )
-            })
+            .map(|block| SingleResponse::completed(to_version_response(block)))
             .unwrap_or_else(|e| SingleResponse::err(grpc::Error::Panic(e.to_string())));
     }
 }
@@ -98,7 +93,6 @@ mod tests {
 
         let blockchain = Arc::new(Blockchain::new());
         let best_block = blockchain.best_block()
-            .expect("best block is required")
             .expect("best block is required");
         let (_node, client) = setup(blockchain);
 
