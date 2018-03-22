@@ -1,12 +1,11 @@
 use chain::entity;
+pub use self::blockchain_entities::Block;
+pub use self::blockchain_entities::BlockHeader;
+pub use self::blockchain_entities::Output;
+pub use self::blockchain_entities::SignedInput;
+pub use self::blockchain_entities::Transaction;
 
 pub mod blockchain_entities;
-
-pub type Block = blockchain_entities::Block;
-pub type Header = blockchain_entities::BlockHeader;
-pub type Transaction = blockchain_entities::Transaction;
-pub type Input = blockchain_entities::SignedInput;
-pub type Output = blockchain_entities::Output;
 
 pub fn to_wire_block(block: entity::Block) -> Block {
     let mut out = Block::new();
@@ -30,8 +29,8 @@ pub fn from_wire_block(block: Block) -> entity::Block {
     };
 }
 
-pub fn to_wire_header(header: entity::Header) -> Header {
-    let mut out = Header::new();
+pub fn to_wire_header(header: entity::Header) -> BlockHeader {
+    let mut out = BlockHeader::new();
 
     out.set_index(header.index);
     out.set_previousHash(header.previous_hash.to_vec());
@@ -44,7 +43,7 @@ pub fn to_wire_header(header: entity::Header) -> Header {
     out
 }
 
-pub fn from_wire_header(header: Header) -> entity::Header {
+pub fn from_wire_header(header: BlockHeader) -> entity::Header {
     return entity::Header {
         index: header.get_index(),
         previous_hash: ::hash::hash_from_bytes(header.get_previousHash()),
@@ -93,8 +92,8 @@ pub fn from_wire_tx(transaction: Transaction) -> entity::Transaction {
     };
 }
 
-pub fn to_wire_input(input: entity::Input) -> Input {
-    let mut out = Input::new();
+pub fn to_wire_input(input: entity::Input) -> SignedInput {
+    let mut out = SignedInput::new();
 
     out.set_reference({
         let mut reference = blockchain_entities::OutputReference::new();
@@ -108,7 +107,7 @@ pub fn to_wire_input(input: entity::Input) -> Input {
     out
 }
 
-pub fn from_wire_input(input: Input) -> entity::Input {
+pub fn from_wire_input(input: SignedInput) -> entity::Input {
     return entity::Input {
         output_ref: entity::OutputReference {
             id: ::hash::hash_from_bytes(input.get_reference().get_id()),

@@ -3,7 +3,7 @@ use chain::entity::Hashable;
 use hash::Hash;
 use hash::sha256;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Header {
     pub index: u64,
     pub previous_hash: Hash,

@@ -49,23 +49,14 @@ impl node_discovery_service_grpc::DiscoveryService for DiscoveryServiceImpl {
     }
 
     fn version(&self, _opt: RequestOptions, _req: VersionRequest) -> SingleResponse<VersionResponse> {
-        let best_block = match self.blockchain.best_block() {
-            Ok(block) => block,
-            Err(_e) => return SingleResponse::err(grpc::Error::Panic("Not found".to_string())),
-        };
-
-        return SingleResponse::completed(VersionResponse::from(best_block));
-    }
-}
-
-impl From<Block> for VersionResponse {
-    fn from(block: Block) -> VersionResponse {
-        let mut response = VersionResponse::new();
-
-        response.set_latestHash(block.header.hash.to_vec());
-        response.set_latestIndex(block.header.index);
-
-        return response;
+        return self.blockchain.best_block()
+            .map(|option| {
+                option.map_or(
+                    SingleResponse::err(grpc::Error::Panic("Not found".to_string())),
+                    |best_block| SingleResponse::completed(to_version_response(best_block)),
+                )
+            })
+            .unwrap_or_else(|e| SingleResponse::err(grpc::Error::Panic(e.to_string())));
     }
 }
 
@@ -73,13 +64,22 @@ pub fn new_discovery_service_def(blockchain: Arc<Blockchain>) -> grpc::rt::Serve
     return DiscoveryServiceServer::new_service_def(DiscoveryServiceImpl { blockchain });
 }
 
+fn to_version_response(block: Block) -> VersionResponse {
+    let mut response = VersionResponse::new();
+
+    response.set_latestHash(block.header.hash.to_vec());
+    response.set_latestIndex(block.header.index);
+
+    return response;
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
     fn test_ping() {
         use chain::Blockchain;
-        use std::sync::Arc;
         use futures::Future;
+        use std::sync::Arc;
 
         let blockchain = Arc::new(Blockchain::new());
         let (_node, client) = setup(blockchain);
@@ -97,14 +97,15 @@ mod tests {
         use std::sync::Arc;
 
         let blockchain = Arc::new(Blockchain::new());
-        let best_block = blockchain.best_block().expect("best block is required");
+        let best_block = blockchain.best_block()
+            .expect("best block is required")
+            .expect("best block is required");
         let (_node, client) = setup(blockchain);
 
         let response = client.version();
         let result = response.wait();
 
-        assert!(&result.is_ok());
-        let (best_index, best_hash) = result.unwrap();
+        let (best_index, best_hash) = result.expect("expected no error");
 
         assert_eq!(&best_block.header.hash[..], best_hash, "expected best block hash to be equal");
         assert_eq!(best_block.header.index, best_index, "expected best block index to be equal");
@@ -114,11 +115,10 @@ mod tests {
         use node::Node;
         use node::NodeConfig;
         use node::p2p::rpc::DiscoveryClient;
-        use rand::random;
+        use std::borrow::Borrow;
 
-        let port = random::<u16>();
-        let node = Node::start(blockchain, NodeConfig { port });
-        let client = DiscoveryClient::new("localhost", port).unwrap();
+        let node = Node::start(blockchain, NodeConfig { addr: None });
+        let client = DiscoveryClient::new(node.local_addr().ip().to_string().borrow(), node.local_addr().port()).unwrap();
 
         return (node, client);
     }
