@@ -21,12 +21,12 @@ pub struct SyncClient {
 }
 
 impl SyncClient {
-    fn new(host: &str, port: u16) -> grpc::Result<SyncClient> {
+    pub fn new(host: &str, port: u16) -> grpc::Result<SyncClient> {
         SyncServiceClient::new_plain(host, port, grpc::ClientConf::new())
             .map(|c| SyncClient { client: c })
     }
 
-    fn get_best_header(&self) -> Box<Future<Item=Header, Error=grpc::Error>> {
+    pub fn get_best_header(&self) -> Box<Future<Item=Header, Error=grpc::Error>> {
         let best_header = self.client.get_best_header(RequestOptions::new(), GetBestHeaderRequest::new())
             .drop_metadata()
             .map(|res| from_wire_header(res.get_header().clone()));
@@ -34,7 +34,7 @@ impl SyncClient {
         return Box::new(best_header);
     }
 
-    fn get_headers(&self, latest_index: u64, latest_hash: Hash) -> Box<Future<Item=Vec<Header>, Error=grpc::Error>> {
+    pub fn get_headers(&self, latest_index: u64, latest_hash: Hash) -> Box<Future<Item=Vec<Header>, Error=grpc::Error>> {
         let mut request = GetHeadersRequest::new();
         request.set_latestIndex(latest_index);
         request.set_latestHash(latest_hash.to_vec());
@@ -49,7 +49,7 @@ impl SyncClient {
         return Box::new(headers);
     }
 
-    fn get_block(&self, index: u64, hash: Hash) -> Box<Future<Item=Block, Error=grpc::Error>> {
+    pub fn get_block(&self, index: u64, hash: Hash) -> Box<Future<Item=Block, Error=grpc::Error>> {
         let mut request = GetBlockRequest::new();
         request.set_index(index);
         request.set_hash(hash.to_vec());
